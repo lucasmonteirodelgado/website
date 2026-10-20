@@ -1,0 +1,7 @@
+{
+  "cleanUrls": true,
+  "headers": [
+    { "source": "/Delgado_CV.pdf", "headers": [{ "key": "Content-Disposition", "value": "inline; filename=\"Delgado_CV.pdf\"" }] },
+    { "source": "/(img|slides)/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=604800" }] }
+  ]
+}
