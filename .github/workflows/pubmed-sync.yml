@@ -1,0 +1,66 @@
+# Every Monday, look for new PubMed papers and open a pull request with them.
+# GitHub emails you about the pull request (you are assigned to it); merging it publishes the papers.
+# Run it by hand from the Actions tab: "PubMed sync" > "Run workflow".
+name: PubMed sync
+
+on:
+  schedule:
+    - cron: "17 9 * * 1"   # Mondays 09:17 UTC (06:17 in Brasília)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency: pubmed-sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Skip papers from rejected (closed without merging) pull requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rejected=$(gh pr list --state closed --label pubmed-sync --limit 200 --json body,mergedAt \
+            --jq '.[] | select(.mergedAt == null) | .body' | grep -oE 'pmids: [0-9,]+' | grep -oE '[0-9]+' | sort -u | paste -sd, - || true)
+          echo "EXCLUDE_PMIDS=$rejected" >> "$GITHUB_ENV"
+
+      - name: Query PubMed and update pubs.js
+        env:
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          SUMMARY_FILE: ${{ runner.temp }}/pr-body.md
+        run: node scripts/pubmed-sync.mjs
+
+      - name: Open or update the review pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BODY: ${{ runner.temp }}/pr-body.md
+          BRANCH: auto/pubmed-sync
+        run: |
+          if git diff --quiet; then echo "No new papers."; exit 0; fi
+          # An open pull request already listing the same papers: leave it (and any edits in it) alone
+          open_body=$(gh pr view "$BRANCH" --json state,body --jq 'select(.state == "OPEN") | .body' 2>/dev/null || true)
+          if [ -n "$open_body" ] && [ "$(grep -oE 'pmids: [0-9,]+' <<<"$open_body")" = "$(grep -oE 'pmids: [0-9,]+' "$BODY")" ]; then
+            echo "Pull request already open for these papers."; exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
+          git add -A
+          git commit -m "Add new PubMed publications"
+          git push --force origin "$BRANCH"
+          gh label create pubmed-sync --color 0E8A16 --description "Automatic PubMed update" 2>/dev/null || true
+          if [ -n "$open_body" ]; then
+            gh pr edit "$BRANCH" --body-file "$BODY"
+          else
+            gh pr create --head "$BRANCH" --title "New PubMed publications" --body-file "$BODY" \
+              --label pubmed-sync --assignee "${{ github.repository_owner }}" \
+            || gh pr create --head "$BRANCH" --title "New PubMed publications" --body-file "$BODY" --label pubmed-sync
+          fi

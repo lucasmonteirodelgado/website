@@ -129,10 +129,11 @@ document.body.insertAdjacentHTML("beforeend", `
 
 /* ---------- Publications ---------- */
 const PUBS = window.PUBS || [];
-const published = PUBS.filter(p => p.st !== "acc");
+const published = PUBS.filter(p => p.st !== "acc" && p.st !== "pre");
 const LABEL = new Map();   // display numbers follow list order (newest first)
 published.forEach((p, i) => LABEL.set(p, String(i + 1).padStart(2, "0")));
 PUBS.filter(p => p.st === "acc").forEach((p, i) => LABEL.set(p, "A" + (i + 1)));
+PUBS.filter(p => p.st === "pre").forEach((p, i) => LABEL.set(p, "P" + (i + 1)));
 const hiAuthors = a => esc(a).replace(/(Monteiro Delgado L|Delgado LM)(\*?)/g, "<strong>$1$2</strong>");
 
 // Research-group counts: papers co-authored with each group's mentors (published only; first author over all)
@@ -146,7 +147,7 @@ document.querySelectorAll("[data-count]").forEach(el => {
   // Counts are original articles; letters, replies and visual abstracts (tag "letter") are counted apart
   const isArt = p => !p.tags.includes("letter");
   // "pub" counts everything published (articles, letters and the visual abstract), as in the CV
-  const n = { pub: published.length, acc: PUBS.filter(p => p.st === "acc").length,
+  const n = { pub: published.length, acc: PUBS.filter(p => p.st === "acc").length, pre: PUBS.filter(p => p.st === "pre").length,
               letters: PUBS.filter(p => !isArt(p)).length, first: PUBS.filter(p => p.f).length,
               all: PUBS.filter(isArt).length }[k];
   if (n !== undefined) el.textContent = n;
@@ -165,7 +166,8 @@ function pubItem(p, num, why){
   if (p.emb) links.push(`<span class="tagemb">Free on PMC from ${esc(p.emb)}</span>`);
   const badges = (p.f ? `<span class="tagfirst">${/\*/.test(p.a.split(",").slice(0, 2).join(",")) ? "Co-first author" : "First author"}</span>` : "")
     + (p.award ? `<span class="tagaward">${esc(p.award)}</span>` : "")
-    + (p.st === "acc" ? `<span class="tagaward">Accepted</span>` : "");
+    + (p.st === "acc" ? `<span class="tagaward">Accepted</span>` : "")
+    + (p.st === "pre" ? `<span class="tagaward" title="Not yet peer reviewed">Preprint</span>` : "");
   return `<li class="pub"><span class="num">${num}</span><div class="body">
     <p class="ttl">${esc(p.t)}</p><p class="au">${hiAuthors(p.a)}</p><p class="jr">${esc(p.j)}</p>
     ${why ? `<p class="why">${esc(why)}</p>` : ""}<div class="acts">${badges}${links.join("")}</div></div></li>`;
@@ -188,6 +190,7 @@ if (listEl){
   const match = p => {
     if (filter === "first" && !p.f) return false;
     if (filter === "acc" && p.st !== "acc") return false;
+    if (filter === "pre" && p.st !== "pre") return false;
     if (filter === "robotic" && !p.tags.includes("robotic")) return false;
     if (filter === "plastic" && !p.tags.includes("plastic")) return false;
     if (filter === "adv" && !p.tags.some(t => ADV.includes(t))) return false;
