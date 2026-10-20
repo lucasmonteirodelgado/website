@@ -363,3 +363,34 @@ document.querySelectorAll(".ic").forEach(box => {
   box.querySelectorAll(".ic-a").forEach(b => b.addEventListener("click", () => show(b.dataset.k)));
   show(box.dataset.first);
 });
+
+/* ---------- Google Scholar metrics, refreshed from /api/scholar (Vercel function + SerpApi) ----------
+   The numbers written in the HTML are the fallback; if the API is unavailable nothing changes. */
+(function(){
+  if (!document.querySelector("[data-gs]")) return;
+  if (!/^https?:$/.test(location.protocol)) return;
+  fetch("/api/scholar", {headers: {Accept: "application/json"}})
+    .then(r => r.ok ? r.json() : Promise.reject(r.status))
+    .then(d => {
+      if (!d || typeof d.cites_all !== "number") return;
+      document.querySelectorAll("[data-gs]").forEach(el => {
+        const k = el.dataset.gs;
+        if (k === "since_label") { if (d.since_year) el.textContent = "Since " + d.since_year; return; }
+        if (d[k] != null) el.textContent = d[k];
+      });
+      const chart = document.querySelector(".gs-chart");
+      const ys = d.years || {};
+      const last = Math.max(...Object.keys(ys).map(Number), 0);
+      const keys = []; for (let y = 2023; y <= last; y++) { keys.push(y); if (ys[y] == null) ys[y] = 0; }
+      if (chart && keys.length) {
+        const mx = Math.max(...keys.map(y => ys[y]), 1);
+        chart.classList.remove("empty");
+        chart.innerHTML = keys.map(y => {
+          const n = ys[y], h = n === 0 ? 0 : Math.max(2, Math.round(n / mx * 100));
+          return `<div class="gs-bar"><span class="gs-n">${n}</span><i style="height:${h}%"></i><span class="gs-y">${y}</span></div>`;
+        }).join("");
+        chart.setAttribute("aria-label", "Citations per year: " + keys.map(y => `${y}: ${ys[y]}`).join(", "));
+      }
+    })
+    .catch(() => {});
+})();
