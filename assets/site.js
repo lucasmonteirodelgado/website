@@ -367,6 +367,11 @@ document.querySelectorAll(".ic").forEach(box => {
   show(box.dataset.first);
 });
 
+/* ---------- "Upcoming" tags drop off on the congress's first day: <span class="tag up" data-start="YYYY-MM-DD"> ---------- */
+document.querySelectorAll(".tag.up[data-start]").forEach(el => {
+  if (new Date() >= new Date(el.dataset.start + "T00:00:00")) el.replaceWith(document.createElement("span"));
+});
+
 /* ---------- Google Scholar metrics, refreshed from /api/scholar (Vercel function + SerpApi) ----------
    The numbers written in the HTML are the fallback; if the API is unavailable nothing changes. */
 (function(){
