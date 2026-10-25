@@ -103,7 +103,8 @@ if (process.argv.includes("--html-only")) process.exit(0);
 
 // ---------- PDF ----------
 const { chromium } = await import("playwright");
-const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {});
+// Full Chromium, not the headless shell: the shell spaces text slightly differently and changes the line breaks
+const browser = await chromium.launch(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : { channel: "chromium" });
 const page = await browser.newPage();
 async function pdf(file, out){
   await page.goto("file://" + path.join(OUT, file));
