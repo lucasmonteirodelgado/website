@@ -1,0 +1,59 @@
+{
+  "_about": "Everything in the CV except the publication lists. Publications come from pubs.js (published, then st:\"acc\"; preprints are left out) and the reviewed journals from REV in assets/site.js. Items with \"site\": false appear in the PDF but not in the page images on cv.html. Run: node scripts/build-cv.mjs",
+  "name": "Lucas Monteiro Delgado",
+  "contact": ["ldelgado@ufmg.br", "+55 31 98589-4110", "Belo Horizonte, Brazil"],
+  "links": [{ "label": "Google Scholar", "href": "https://scholar.google.com/citations?user=StCPz7sAAAAJ" }],
+  "boldAuthor": ["Delgado LM", "Monteiro Delgado L"],
+  "sections": [
+    { "title": "Education", "items": [
+      { "head": "Federal University of Minas Gerais (UFMG)", "right": "Belo Horizonte, Brazil", "sub": "Doctor of Medicine (MD)", "subRight": "Jul. 2021 – Jun. 2027" }
+    ]},
+    { "title": "Licensure", "lines": [
+      { "text": "United States Medical Licensing Examination (USMLE) Step 1: Pass", "right": "Mar. 2026" },
+      { "text": "USMLE Step 2 CK: expected", "right": "Mid-2027", "site": false }
+    ]},
+    { "title": "Research Experience", "items": [
+      { "head": "Federal University of Minas Gerais, Department of Surgery", "right": "Belo Horizonte, Brazil",
+        "sub": "Undergraduate Research Fellow (Iniciação Científica), funded fellowship", "subRight": "Aug. 2026 – Present",
+        "body": "Prospective clinical study evaluating breast sensitivity before and after mastopexy with implants using the mini-L technique. Principal investigator: Leandro Ricardo de Aquino Santos, MD." },
+      { "head": "Surgery Research Group", "right": "Brazil", "sub": "Research Collaborator", "subRight": "Jan. 2024 – Present",
+        "body": "Design and lead systematic reviews and meta-analyses in general, colorectal, and hepatobiliary surgery, carrying projects from question formulation and PROSPERO registration through search, dual screening, data extraction, and analysis in R. Methods span pairwise, Bayesian, and trial sequential meta-analysis, single-arm pooling of proportions, and synthesis of propensity score matched evidence. Coordinate multi-author teams across institutions, allocate work among junior collaborators, and carry manuscripts through peer review and revision. Mentors: Bernardo Fontel Pompeu, MD, and Sérgio Mazzola Poli de Figueiredo, MD." },
+      { "head": "Thoracic Surgery Research Group", "right": "Brazil", "sub": "Research Collaborator", "subRight": "Jun. 2025 – Present",
+        "body": "Lead evidence synthesis in thoracic surgery and lung transplantation, serving as primary analyst on most projects. Work includes survival analysis from reconstructed individual patient data in pleural mesothelioma, comparative studies of extracorporeal membrane oxygenation configurations, chest wall reconstruction, and the diagnostic performance of preoperative functional imaging. Collaborate with thoracic surgeons in Brazil, Europe, and the United States. Mentor: Rachid Eduardo Noleto da Nobrega Oliveira, MD." }
+    ]},
+    { "title": "Teaching Experience", "items": [
+      { "head": "Meta-Analysis Academy", "right": "Brazil", "sub": "Research Mentor", "subRight": "Jun. 2025 – Present",
+        "body": "Mentor students through the full research process of systematic reviews and meta-analyses, from question formulation and protocol registration to data extraction, statistical analysis, and manuscript preparation. Provide weekly feedback, ensure methodological rigor, and support mentees toward first authorship. Mentor: Rhanderson Cardoso, MD." },
+      { "sub": "Teaching Assistant", "subRight": "Jun. 2025 – Mar. 2026",
+        "body": "Ran weekly support sessions addressing students' methodological questions and reinforcing research concepts from the week's classes. Mentor: Rhanderson Cardoso, MD." }
+    ]},
+    { "title": "Honors and Awards", "items": [
+      { "head": "Best Abstract, Head and Neck Session, Society of Robotic Surgery Annual Meeting", "right": "Fort Lauderdale, FL, 2026",
+        "body": "Endoscopic Thyroidectomy Vestibular Approach versus Open Thyroidectomy for Graves' Disease: A Systematic Review and Meta-analysis." },
+      { "head": "Outstanding Author, Journal of Thoracic Disease", "right": "2026",
+        "body": "Recognition for Parallel-bar versus cross-bar configurations in the Nuss procedure: a systematic review and meta-analysis." },
+      { "head": "ESTS–SBCT Award", "right": "Athens, Greece, 2026",
+        "body": "Best paper presented by a member of the Brazilian Society of Thoracic Surgery (SBCT) at the European Society of Thoracic Surgeons (ESTS) annual meeting, for the same study." },
+      { "head": "1st Place, Oral Presentation, SOBED Days 2025", "right": "Campinas, Brazil",
+        "body": "Intragastric Balloon for Obesity Treatment: A Systematic Review and Meta-Analysis of Randomized Controlled Trials." },
+      { "head": "UEG Week 2025 Travel Grant (€500)", "right": "Berlin, Germany",
+        "body": "Awarded to present Intragastric Balloon for Obesity Treatment: A Systematic Review and Meta-Analysis of Randomized Clinical Trials." },
+      { "head": "Editor's Choice and Cover Feature, Gastrointestinal Endoscopy", "right": "Apr. 2025",
+        "body": "Endoscopic submucosal tunneling techniques versus flexible endoscopic septotomy for Zenker's diverticulum: a systematic review and meta-analysis. Selected as Editor's Choice and featured on the journal cover." },
+      { "head": "2nd Place, Free Topic Oral Presentation, SBAD 2024", "right": "Salvador, Brazil",
+        "body": "Endoscopic Submucosal Tunneling Techniques versus Flexible Endoscopic Septotomy for Zenker's Diverticulum: A Systematic Review and Meta-Analysis. XXIII Brazilian Digestive System Week." }
+    ]},
+    { "title": "Professional Memberships", "lines": [
+      { "text": "American Society of Plastic Surgeons", "right": "2026 – Present" }
+    ]},
+    { "title": "Editorial Activity", "reviewer": "Ad hoc peer reviewer" },
+    { "title": "Skills", "lines": [
+      { "text": "Systematic review and meta-analysis: pairwise, network, Bayesian, and single-arm; individual patient data reconstruction" },
+      { "text": "Statistical analysis in R; trial sequential analysis; dose-response modeling" },
+      { "text": "Languages: Portuguese (native), English (fluent), Spanish (intermediate)" }
+    ]},
+    { "title": "Selected Publications", "selected": [48, 78, 3, 8] },
+    { "title": "Peer-Reviewed Publications", "publications": "published", "note": "Asterisks denote co-first authorship." },
+    { "title": "Manuscripts Accepted or in Press", "publications": "accepted", "note": "Asterisks denote co-first authorship." }
+  ]
+}

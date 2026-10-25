@@ -1,0 +1,49 @@
+# Rebuilds the CV (Delgado_CV.pdf, the page images in img/cv and the page count on cv.html) from the site's data
+# whenever publications (pubs.js), reviewed journals (assets/site.js) or the CV data/template change, including when
+# a PubMed pull request is merged. Run it by hand from the Actions tab: "Build CV" > "Run workflow".
+name: Build CV
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - pubs.js
+      - assets/site.js
+      - scripts/cv/**
+      - scripts/build-cv.mjs
+      - .github/workflows/cv-build.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency: cv-build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Install Chromium and poppler
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+
+      - name: Build the CV
+        run: node scripts/build-cv.mjs
+
+      - name: Commit the new CV
+        run: |
+          git add Delgado_CV.pdf img/cv cv.html
+          if git diff --cached --quiet; then echo "CV unchanged."; exit 0; fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Rebuild CV"
+          git pull --rebase origin main
+          git push origin HEAD:main

@@ -89,7 +89,7 @@ function toEntry(rec){
 }
 
 // ---------- pubs.js ----------
-const KEY_ORDER = ["n", "f", "st", "a", "t", "j", "y", "doi", "pmid", "pmc", "oa", "emb", "pdf", "tags", "award"];
+const KEY_ORDER = ["n", "f", "st", "a", "t", "j", "cj", "y", "doi", "pmid", "pmc", "oa", "emb", "pdf", "tags", "award"];
 function serialize(e){
   const keys = [...KEY_ORDER.filter(k => k in e), ...Object.keys(e).filter(k => !KEY_ORDER.includes(k))];
   return "{" + keys.map(k => `${k}:${JSON.stringify(e[k])}`).join(",") + "}";
@@ -130,6 +130,7 @@ function main(pm){
       if (match.st === "pre"){ delete match.doi; delete match.pdf; delete match.oa; }
       const u = { ...match, j: e.j, y: e.y, pmid: e.pmid, ...(e.doi && !match.doi && { doi: e.doi }), ...(e.pmc && !match.pmc && { pmc: e.pmc }) };
       delete u.st;
+      delete u.cj;   // the CV citation of the accepted/in-press version is replaced by PubMed's
       const i = lineOf(match.n);
       if (match.st === "acc" || match.st === "pre"){ lines[i] = null; top.push(serialize(u)); }
       else lines[i] = serialize(u);
