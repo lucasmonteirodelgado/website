@@ -1,11 +1,11 @@
-# Every Monday, look for new PubMed papers and open a pull request with them.
+# Every day, look for new PubMed papers and open a pull request with them.
 # GitHub emails you about the pull request (you are assigned to it); merging it publishes the papers.
 # Run it by hand from the Actions tab: "PubMed sync" > "Run workflow".
 name: PubMed sync
 
 on:
   schedule:
-    - cron: "17 9 * * 1"   # Mondays 09:17 UTC (06:17 in Brasília)
+    - cron: "17 9 * * *"   # Daily 09:17 UTC (06:17 in Brasília)
   workflow_dispatch:
 
 permissions:
