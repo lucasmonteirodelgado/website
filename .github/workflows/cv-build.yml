@@ -23,7 +23,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # Always build from the newest main: runs queue up (concurrency), and a queued run must include what the
+      # previous one committed, or its commit conflicts with it
       - uses: actions/checkout@v5
+        with:
+          ref: main
 
       - uses: actions/setup-node@v5
         with:
