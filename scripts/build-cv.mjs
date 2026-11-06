@@ -10,6 +10,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import vm from "node:vm";
+import crypto from "node:crypto";
 import { execFileSync } from "node:child_process";
 
 const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..");
@@ -137,12 +138,15 @@ const overlays = data.links.map(l => {
   return `<a class="cv-ln" href="${l.href}" target="_blank" rel="noopener" style="left:${pct(x0 / W)};top:${pct(y0 / H)};width:${pct((x1 - x0) / W)};height:${pct((y1 - y0) / H)}" aria-label="Open link"></a>`;
 }).join("");
 const n = pages.length;
+// Version tag from each file's contents: the images are cached for a week (vercel.json), so a new tag makes browsers fetch the new pages
+const ver = f => crypto.createHash("sha1").update(fs.readFileSync(f)).digest("hex").slice(0, 8);
 const doc = `<section aria-label="CV pages" class="cv-doc">` + pages.map((_, i) =>
-  `<div class="cv-pg"><img src="img/cv/p${i + 1}.jpg" width="1445" height="1870" alt="CV, page ${i + 1} of ${n}"${i ? ' loading="lazy"' : ""}>${i ? "" : overlays}</div>`).join("") + `</section>`;
+  `<div class="cv-pg"><img src="img/cv/p${i + 1}.jpg?v=${ver(path.join(IMG, `p${i + 1}.jpg`))}" width="1445" height="1870" alt="CV, page ${i + 1} of ${n}"${i ? ' loading="lazy"' : ""}>${i ? "" : overlays}</div>`).join("") + `</section>`;
 const month = new Date().toLocaleString("en-US", { month: "long", year: "numeric", timeZone: "America/Sao_Paulo" });
 const cvPath = path.join(ROOT, "cv.html");
 let cvHtml = fs.readFileSync(cvPath, "utf8")
   .replace(/<section aria-label="CV pages" class="cv-doc">.*?<\/section>/s, doc)
-  .replace(/\d+ pages · updated [A-Za-z]+ \d{4}/, `${n} pages · updated ${month}`);
+  .replace(/\d+ pages · updated [A-Za-z]+ \d{4}/, `${n} pages · updated ${month}`)
+  .replace(/href="Delgado_CV\.pdf(\?v=\w+)?"/, `href="Delgado_CV.pdf?v=${ver(PDF)}"`);
 fs.writeFileSync(cvPath, cvHtml);
 console.log(`CV: ${published.length} published, ${accepted.length} accepted, ${n} pages`);
